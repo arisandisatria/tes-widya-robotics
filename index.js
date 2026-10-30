@@ -1,10 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import path from "path";
+import expressLayouts from "express-ejs-layouts";
 
 import { mongoDBURL, PORT } from "./config.js";
 
 import authRouter from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 
@@ -25,7 +28,12 @@ mongoose
     console.log(error);
   });
 
+app.set("view engine", "ejs");
+app.use(expressLayouts);
+app.set("layout", "layouts/main");
+
 app.use("/api/auth", authRouter);
+app.use("/", userRoutes);
 
 app.get("/", (req, res) => {
   res.json("API for Widya Robotics knowledge test");
