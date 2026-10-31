@@ -1,17 +1,30 @@
-<form action="/login" method="POST">
-    <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        required
-    >
+<div class="content-body">
+  <div class="form-wrapper">
+    <h1 class="text-title">Halaman Login!</h1>
 
-    <input
+    <div class="field-group">
+      <input
+        class="input"
+        type="text"
+        id="txt-email"
+        name="email"
+        placeholder="E-mail"
+      />
+      <input
+        class="input"
         type="password"
+        id="txt-password"
         name="password"
         placeholder="Password"
-        required
-    >
+      />
+    </div>
 
-    <button type="submit">Login</button>
-</form>
+    <div class="field-group">
+      <input class="btn-submit" type="submit" value="Login" />
+    </div>
+
+    <div class="text-register">
+      Belum punya akun? <a href="/register">Daftar di sini</a>
+    </div>
+  </div>
+</div>

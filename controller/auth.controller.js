@@ -51,6 +51,7 @@ export const register = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+    return res.redirect("/register");
   }
 };
 
