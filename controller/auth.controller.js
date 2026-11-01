@@ -1,9 +1,11 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { randomUUID } from "crypto";
 import User from "../model/user.model.js";
 import { errorHandler } from "../utils/errorHandler.js";
 import { validateEmail } from "../utils/verifyEmail.js";
 import { JWT_TOKEN } from "../config.js";
+import tokenBlacklist from "../model/tokenBlacklist.model.js";
 
 export const register = async (req, res, next) => {
   const { fullname, email, gender, password, confirmPassword } = req.body;
@@ -80,16 +82,16 @@ export const login = async (req, res, next) => {
   if (!validPassword) return next(errorHandler(401, "Password salah!"));
 
   try {
+    const jti = randomUUID();
+
     const token = await jwt.sign({ id: validUser._id }, JWT_TOKEN, {
       expiresIn: "1d",
+      jwtid: jti,
     });
 
     const { password: pass, ...rest } = validUser._doc;
 
-    res
-      .cookie("access_token", token)
-      .status(200)
-      .json({ ...rest, token });
+    res.status(200).json({ ...rest, access_token: token });
   } catch (error) {
     next(error);
   }
@@ -97,7 +99,21 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    res.clearCookie("access_token");
+    const { jti, exp } = req.tokenPayload;
+
+    await tokenBlacklist.updateOne(
+      { jti },
+      {
+        $setOnInsert: {
+          jti,
+          expiresAt: new Date(exp * 1000),
+        },
+      },
+      {
+        upsert: true,
+      },
+    );
+
     res.status(200).json({ message: "User sudah logout!" });
   } catch (error) {
     next(error);

@@ -196,8 +196,8 @@ API Link : -
 ### 3. **Logout User**
 
 - Endpoint: `api/auth/logout`
-- Method: `GET`
-- Auth: NO
+- Method: `POST`
+- Auth: YES
 - Body: -
 - Response:
   - Success: `200 OK`
@@ -210,9 +210,19 @@ API Link : -
     }
     ```
 
-  - Error:`500 Internal Server Error`
+  - Error:`401 Unauthorized` || `500 Internal Server Error`
 
     Example:
+
+    If token is revoked `401 Unauthorized`:
+
+    ```json
+    {
+      "success": false,
+      "statusCode": 401,
+      "message": "Tidak terotorisasi!"
+    }
+    ```
 
     If the server get an error `500 Internal Server Error`:
 
@@ -250,9 +260,29 @@ API Link : -
     }
     ```
 
-  - Error: `404 Not Found` || `500 Internal Server Error`
+  - Error: `401 Unauthorized` || `404 Not Found` || `500 Internal Server Error`
 
     Example:
+
+    If token is revoked `401 Unauthorized`:
+
+    ```json
+    {
+      "success": false,
+      "statusCode": 401,
+      "message": "Token sudah dicabut!"
+    }
+    ```
+
+    If token is invalid or expired `401 Unauthorized`:
+
+    ```json
+    {
+      "success": false,
+      "statusCode": 401,
+      "message": "Token tidak valid atau kedaluwarsa!"
+    }
+    ```
 
     If account is unregistered `404 Not Found`:
 

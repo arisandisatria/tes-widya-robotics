@@ -2,29 +2,66 @@
   <div class="form-wrapper">
     <h1 class="text-title">Halaman Login!</h1>
 
-    <div class="field-group">
-      <input
-        class="input"
-        type="text"
-        id="txt-email"
-        name="email"
-        placeholder="E-mail"
-      />
-      <input
-        class="input"
-        type="password"
-        id="txt-password"
-        name="password"
-        placeholder="Password"
-      />
-    </div>
+    <form id="form-login">
+      <div class="field-group">
+        <input
+          class="input"
+          type="text"
+          id="email"
+          name="email"
+          placeholder="E-mail"
+        />
+        <input
+          class="input"
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+        />
+      </div>
 
-    <div class="field-group">
-      <input class="btn-submit" type="submit" value="Login" />
-    </div>
+      <div class="field-group">
+        <input class="btn-submit" type="submit" value="Login" />
+      </div>
+    </form>
 
     <div class="text-register">
       Belum punya akun? <a href="/register">Daftar di sini</a>
     </div>
   </div>
 </div>
+
+<script>
+  const form = document.getElementById("form-login");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const data = { email, password };
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Berhasil Login!");
+
+        window.location.href = "/";
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+</script>
